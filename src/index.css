@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@layer base {
+  img {
+    display: initial;
+  }
+}
