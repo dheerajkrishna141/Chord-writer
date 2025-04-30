@@ -33,22 +33,26 @@ const ChordConfigBar = () => {
 
   useEffect(() => {
     if (
-      songConfig.title &&
-      songConfig.tempo &&
-      chordConfig.scale &&
+      songConfig.title ||
+      songConfig.tempo ||
+      chordConfig.scale ||
       chordConfig.rootNote
     ) {
+      var scale = "";
+      if (chordConfig.rootNote && chordConfig.scale) {
+        scale = `${chordConfig.rootNote} ${chordConfig.scale}`;
+      }
       const songConfigData: MetaData = {
         title: songConfig.title,
         tempo: songConfig.tempo,
-        scale: `${chordConfig.rootNote} ${chordConfig.scale}`,
+        scale: scale,
       };
       metaContext.setSongMetaData(songConfigData);
     }
-  }, [songConfig]);
+  }, [songConfig, chordConfig]);
 
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-col md:flex-row gap-4">
       <div className="flex flex-col gap-2">
         <h3>Title</h3>
         <input

@@ -12,6 +12,7 @@ export interface chordContext {
   setCustomChord: Dispatch<React.SetStateAction<Chord>>;
   canvasState: CanvasState[];
   setCanvasState: Dispatch<React.SetStateAction<CanvasState[]>>;
+  isDragging: boolean;
 }
 
 export const ChordContext = React.createContext<chordContext>(

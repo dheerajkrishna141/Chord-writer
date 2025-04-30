@@ -21,27 +21,16 @@ function App() {
   const [customChord, setCustomChord] = useState<Chord>({} as Chord);
   const [songMetaData, setSongMetaData] = useState({} as MetaData);
   const [canvas, setCanvas] = useState<CanvasState[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
 
-  const ref = useRef<HTMLDivElement>(null);
-
-  const generatePdf = () => {
-    if (!ref.current) return;
-    const divElement = ref.current;
-    console.log("divElement", divElement);
-
-    html2canvas(divElement).then((canvas) => {
-      const data = canvas.toDataURL("image/png");
-      const pdf = new jsPDF();
-      const imgProperties = pdf.getImageProperties(data);
-      const pdfWidth = pdf.internal.pageSize.getWidth() - 20; // Subtracting 20 for 10 margin on each side
-      const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
-      pdf.addImage(data, "PNG", 10, 10, pdfWidth, pdfHeight); // Adding 10 margin
-      pdf.save("download.pdf");
-    });
+  const handleDragStart = () => {
+    setIsDragging(true);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    setIsDragging(false);
+
     if (!over) return;
     const activeId = active.id as string;
     const overId = over.id as string;
@@ -57,7 +46,15 @@ function App() {
         const lyricIndex = parseInt(activeId.split("-")[1]);
         const chordIndex = parseInt(activeId.split("-")[2]);
         const Chords = newCanvas[lyricIndex].ChordBoxes;
-        Chords.splice(chordIndex, 1);
+        if (Chords[chordIndex]) {
+          Chords[chordIndex].count = Math.max(
+            (Chords[chordIndex].count || 1) - 1,
+            0
+          );
+          if (Chords[chordIndex].count === 0) {
+            Chords[chordIndex].isEmpty = true;
+          }
+        }
         return newCanvas;
       });
 
@@ -82,7 +79,12 @@ function App() {
       const lyricIndex = parseInt(overId.split("-")[1]);
       const chordBoxIndex = parseInt(overId.split("-")[2]);
       const newCanvas = [...prev];
-      newCanvas[lyricIndex].ChordBoxes[chordBoxIndex] = false;
+      const currentBox = newCanvas[lyricIndex].ChordBoxes[chordBoxIndex];
+      newCanvas[lyricIndex].ChordBoxes[chordBoxIndex] = {
+        count: (currentBox?.count || 0) + 1,
+        isEmpty: false,
+      };
+
       return newCanvas;
     });
 
@@ -97,8 +99,8 @@ function App() {
 
   return (
     <>
-      <div className="p-10 w-[595px] h-[842px] bg-white ">
-        <DndContext onDragEnd={handleDragEnd}>
+      <div className="p-10  bg-white ">
+        <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           <ChordContext.Provider
             value={{
               canvasState: canvas,
@@ -109,6 +111,7 @@ function App() {
               setCustomChord: setCustomChord,
               potentialChords: potentialChords,
               setPotentialChords: setPotentialChords,
+              isDragging: isDragging,
             }}
           >
             <MetaDataContext.Provider
@@ -117,21 +120,13 @@ function App() {
                 setSongMetaData: setSongMetaData,
               }}
             >
-              <div>
+              <div className="flex flex-col lg:justify-center lg:items-center overflow-auto">
                 <Hero />
-                <div ref={ref}>
-                  <Canvas />
-                </div>
 
-                <div>
-                  <h1>Drop here to delete</h1>
-                  <DropBox id="deleteBox">
-                    <div className="w-10 h-10 bg-red-500"></div>
-                  </DropBox>
-                </div>
+                <Canvas />
 
-                <div className="p-2 bg-blue-500 rounded-md w-fit">
-                  <button onClick={generatePdf}>Download</button>
+                <div className="download p-2 bg-blue-500 rounded-md w-fit">
+                  <button>Download</button>
                 </div>
               </div>
             </MetaDataContext.Provider>
