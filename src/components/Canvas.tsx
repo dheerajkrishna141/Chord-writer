@@ -1,143 +1,186 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { IoAddCircleSharp } from "react-icons/io5";
+import { parseCanvasSavedState } from "../functions/helperFunctions";
 import { ChordContext } from "../stateManagement/chordContext";
-import ChordBox from "./ChordBox";
-import DropBox from "./DropBox";
-import DynamicDropBox from "./DynamicDropBox";
+import useLocalStorage from "../stateManagement/useLocalStorage";
 import MetaData from "./MetaData";
+import Section from "./Section";
+import { MdClose } from "react-icons/md";
 
-export type CanvasState = {
+export interface SectionState {
   ChordBoxes: { isEmpty: boolean; count: number }[];
   Lyrics: string;
-};
+  Multiplier?: string;
+}
+export interface CanvasType {
+  SubHeading: string;
+  SectionState: SectionState[];
+}
 
 const Canvas = () => {
+  const [sectionFocus, setSectionFocus] = useState(false);
+
   const context = useContext(ChordContext);
+  const { getItem } = useLocalStorage("canvasState");
+  const savedState = getItem()
+    ? parseCanvasSavedState(getItem() || "")
+    : undefined;
   const chordsToRender = context.chordsToRender;
   const canvas = context.canvasState;
   const setCanvas = context.setCanvasState;
+  const setChordsToRender = context.setChordsToRender;
 
-  const addLyric = () => {
-    console.log("canvas", canvas);
+  const addSection = () => {
+    setCanvas((prev) => {
+      console.log("prev", prev);
+
+      const newCanvas = [
+        ...prev,
+        {
+          SubHeading: "",
+          SectionState: [
+            {
+              ChordBoxes: [],
+              Lyrics: "",
+              Multiplier: "",
+            },
+          ],
+        },
+      ];
+      console.log("newCanvas", newCanvas);
+      return newCanvas;
+    });
+  };
+
+  const addLyric = (sectionIndex: number) => {
     console.log("chordsToRender", chordsToRender);
+    console.log("canvas", canvas);
 
-    setCanvas((prev) => [
-      ...prev,
-      {
+    setCanvas((prev) => {
+      const newCanvas = [...prev];
+      newCanvas[sectionIndex].SectionState.push({
         ChordBoxes: [],
         Lyrics: "",
-      },
-    ]);
-  };
-
-  const deleteChordBox = (lyricIndex: number, chordBoxIndex: number) => () => {
-    setCanvas((prev) => {
-      const newCanvas = [...prev];
-      newCanvas[lyricIndex].ChordBoxes.splice(chordBoxIndex, 1);
+        Multiplier: "",
+      });
       return newCanvas;
     });
   };
 
-  const removeLyric = (lyricIndex: number) => () => {
+  const handleSubHeading = (sectionIndex: number, subHeading: string) => {
     setCanvas((prev) => {
       const newCanvas = [...prev];
-      newCanvas.splice(lyricIndex, 1);
-      //set chordstorender
+      newCanvas[sectionIndex].SubHeading = subHeading;
       return newCanvas;
     });
   };
+
+  const handleSectionDelete = (sectionIndex: number) => {
+    setCanvas((prev) => {
+      const newCanvas = [...prev];
+      newCanvas.splice(sectionIndex, 1);
+      return newCanvas;
+    });
+    setChordsToRender((prev) => {
+      const chordsToUpdate: typeof prev = [];
+      const remaining: typeof prev = [];
+      prev.forEach((chord) => {
+        const chordID = chord.id.toString();
+        const currSectionIndex = parseInt(chordID.split("-")[1]);
+        if (currSectionIndex > sectionIndex) {
+          chordsToUpdate.push(chord);
+        } else {
+          remaining.push(chord);
+        }
+      });
+      const remainingChords = remaining.filter(
+        (chord) => !chord.overid.startsWith(`${sectionIndex}-`)
+      );
+      const newChords = chordsToUpdate.map((chord) => {
+        const chordID = chord.id.toString();
+        const chordBoxID = parseInt(chordID.split("-")[3]);
+        const lyricIndex = parseInt(chordID.split("-")[2]);
+        const currSectionIndex = parseInt(chordID.split("-")[1]);
+        const newChordID = `${chordID.split("-")[0]}-${
+          currSectionIndex - 1
+        }-${lyricIndex}-${chordBoxID}`;
+        const newOverId = `${currSectionIndex - 1}-${lyricIndex}-${chordBoxID}`;
+        return { ...chord, id: newChordID, overid: newOverId };
+      });
+
+      return [...newChords, ...remainingChords];
+    });
+  };
+
+  useEffect(() => {
+    if (savedState) {
+      setChordsToRender(savedState.chordsToRender);
+      setCanvas(savedState.canvasState);
+    }
+    console.log("Canvas mounted with saved state:", savedState);
+  }, []);
 
   return (
-    <div className="canvas-content border-2 border-gray-300 rounded-md p-4 w-[8.5in] h-[11in] bg-white ">
+    <div className="canvas-content border-2 border-gray-300 rounded-md p-4 w-[8.5in] h-fit bg-white ">
       <MetaData></MetaData>
-      <div className="flex flex-col gap-2 ">
-        {canvas.map((item, lyricIndex) => {
+      <div className="flex flex-col gap-4 ">
+        {canvas.map((canvasItem, sectionIndex) => {
           return (
-            <div key={lyricIndex}>
-              <div className="flex flex-col gap-2">
-                <div>
-                  <div className="flex gap-2 items-center">
-                    {item.ChordBoxes.map((currentChordBox, chordBoxIndex) => (
-                      <div
-                        className="flex gap-1 items-center"
-                        key={chordBoxIndex}
-                      >
-                        <DropBox id={`lyric-${lyricIndex}-${chordBoxIndex}`}>
-                          {currentChordBox.isEmpty ? (
-                            <div
-                              className="text-red-400 mx-auto text-center cursor-pointer"
-                              onClick={deleteChordBox(
-                                lyricIndex,
-                                chordBoxIndex
-                              )}
-                            >
-                              X
-                            </div>
-                          ) : (
-                            <div className="flex">
-                              {(() => {
-                                const relevantChords = chordsToRender?.filter(
-                                  (chord) =>
-                                    chord.overid ===
-                                    `lyric-${lyricIndex}-${chordBoxIndex}`
-                                );
-                                return relevantChords?.map((chord, index) => (
-                                  <>
-                                    <ChordBox
-                                      className="hover:bg-blue-100"
-                                      key={chord.id}
-                                      isPlaced={true}
-                                      chord={chord}
-                                    />
-                                    {currentChordBox.count > 1 &&
-                                      index < relevantChords.length - 1 && (
-                                        <p className="mt-1 mr-0.5">,</p>
-                                      )}
-                                  </>
-                                ));
-                              })()}
-                            </div>
-                          )}
-                        </DropBox>
-                        <p>|</p>
-                      </div>
-                    ))}
-                    <DynamicDropBox id={`add-chordBox-${lyricIndex}`} />
-                  </div>
-                  <input
-                    className="w-100"
-                    value={item.Lyrics}
-                    placeholder="lyrics go here..."
-                    onChange={(e) => {
-                      setCanvas([
-                        ...canvas.slice(0, lyricIndex),
-                        {
-                          ...canvas[lyricIndex],
-                          Lyrics: e.target.value,
-                        },
-                        ...canvas.slice(lyricIndex + 1),
-                      ]);
-                    }}
-                  ></input>
-                  <button
-                    onClick={removeLyric(lyricIndex)}
-                    className="remove-lyric px-[3px] py-[1px] bg-red-400 rounded-md text-white cursor-pointer"
-                  >
-                    Remove
-                  </button>
+            <div
+              key={sectionIndex}
+              className="relative"
+              onMouseEnter={() => setSectionFocus(true)}
+              onMouseLeave={() => setSectionFocus(false)}
+            >
+              {sectionFocus && (
+                <div
+                  onClick={() => handleSectionDelete(sectionIndex)}
+                  className="remove-lyric absolute top-0 right-0 p-2 cursor-pointer hover:scale-105 transition-all duration-100 ease-in-out"
+                >
+                  <MdClose color="red" size={"30px"} />
                 </div>
+              )}
+
+              <div>
+                <input
+                  type="text"
+                  className=" mb-3 mt-1 text-2xl"
+                  placeholder="Sub Heading"
+                  value={canvasItem.SubHeading}
+                  onChange={(e) =>
+                    handleSubHeading(sectionIndex, e.target.value)
+                  }
+                />
               </div>
+              {canvasItem.SectionState?.map((sectionItem, lyricIndex) => {
+                return (
+                  <Section
+                    chordsToRender={chordsToRender}
+                    lyricIndex={lyricIndex}
+                    sectionItem={sectionItem}
+                    key={lyricIndex}
+                    sectionIndex={sectionIndex}
+                  />
+                );
+              })}
+              <button
+                className="add-lyric flex justify-center items-center gap-2 bg-blue-500 text-white rounded-md px-2 py-1 mt-4 cursor-pointer hover:scale-102 transition-all duration-20 ease-in-out"
+                onClick={() => addLyric(sectionIndex)}
+              >
+                <IoAddCircleSharp />
+                ADD LYRIC
+              </button>
             </div>
           );
         })}
+        <button
+          className="add-lyric flex justify-center items-center gap-2 bg-blue-500 text-white rounded-md px-2 py-1 mt-4 cursor-pointer hover:scale-102 transition-all duration-20 ease-in-out"
+          onClick={addSection}
+        >
+          <IoAddCircleSharp />
+          ADD SECTION
+        </button>
       </div>
-      <button
-        className="add-lyric flex justify-center items-center gap-2 bg-blue-500 text-white rounded-md p-[2px]"
-        onClick={addLyric}
-      >
-        <IoAddCircleSharp />
-        ADD
-      </button>
     </div>
   );
 };

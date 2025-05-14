@@ -1,7 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
-import { Chord } from "./ChordConfigBar";
 import { scales } from "../data/ChordConfigData";
-import { motion } from "framer-motion";
+import { Chord } from "./ChordConfigBar";
 
 interface props {
   chord: Chord;
@@ -9,11 +8,13 @@ interface props {
   className?: string;
 }
 const ChordBox = ({ chord, isPlaced, className }: props) => {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: chord.id,
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: chord.id,
+    });
 
   var style = {
+    zIndex: isDragging ? 11 : 0,
     padding: isPlaced ? "0.2rem" : "0.5rem",
     cursor: "pointer",
     transition: "background-color 0.2s ease-in-out",

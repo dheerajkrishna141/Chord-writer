@@ -12,7 +12,17 @@
     display: none;
   }
 
+  .chord-bar {
+    display: none;
+  }
+
   .remove-lyric {
+    display: none;
+  }
+  .remove-dynamicDrop {
+    display: none;
+  }
+  .remove-multiplier {
     display: none;
   }
   .canvas-content {

@@ -1,7 +1,7 @@
 import React, { Dispatch } from "react";
 import { MetaData } from "../components/MetaData";
 
-interface MetaDataContext {
+export interface MetaDataContext {
   setSongMetaData: Dispatch<React.SetStateAction<MetaData>>;
   songMetaData: MetaData;
 }

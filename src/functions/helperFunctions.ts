@@ -1,5 +1,7 @@
 import { Chord } from "../components/ChordConfigBar";
 import { majorFamily, minorFamily, rootNotes } from "../data/ChordConfigData";
+import { chordContext } from "../stateManagement/chordContext";
+import { MetaDataContext } from "../stateManagement/metaDataContext";
 
 export const potentialChordFinder = (chordConfig: Chord) => {
   var potentialChords: Chord[] = [];
@@ -23,6 +25,18 @@ export const potentialChordFinder = (chordConfig: Chord) => {
   return potentialChords;
 };
 
-export const chordMaker = (chord: Chord) => {
+export const customChordMaker = (chord: Chord) => {
   return { ...chord, id: `custom${chord.rootNote}${chord.scale}` };
+};
+
+export const parseCanvasSavedState = (savedState: string) => {
+  if (savedState === "") return;
+  const savedContext: chordContext = JSON.parse(savedState);
+  return savedContext;
+};
+
+export const parseMetaDataSavedState = (savedState: string) => {
+  if (savedState === "") return;
+  const savedMetaData: MetaDataContext = JSON.parse(savedState);
+  return savedMetaData;
 };

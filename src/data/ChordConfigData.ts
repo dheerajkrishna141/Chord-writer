@@ -19,6 +19,7 @@ export const scales = [
   { id: "diminished", name: "Diminished", suffix: "dim" },
   // { id: "augmented", name: "Augmented" },
   // { id: "dominant7th", name: "Dominant 7th" },
+  { id: "power", name: "Power Chord", suffix: "5" },
   { id: "major7th", name: "Major 7th", suffix: "7" },
   { id: "minor7th", name: "Minor 7th", suffix: "min7" },
 ];

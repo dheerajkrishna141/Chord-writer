@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { rootNotes, scales } from "../data/ChordConfigData";
-import { chordMaker } from "../functions/helperFunctions";
+import { customChordMaker } from "../functions/helperFunctions";
 import { ChordContext } from "../stateManagement/chordContext";
 import ChordBox from "./ChordBox";
 import { Chord } from "./ChordConfigBar";
@@ -11,8 +11,7 @@ const CustomChord = () => {
 
   useEffect(() => {
     if (selectedChord.rootNote && selectedChord.scale) {
-      const finalChord = chordMaker(selectedChord);
-      console.log(finalChord);
+      const finalChord = customChordMaker(selectedChord);
       customChord?.setCustomChord(finalChord);
     }
   }, [selectedChord]);
@@ -60,7 +59,12 @@ const CustomChord = () => {
           </select>
         </div>
       </div>
-      {customChord && <ChordBox chord={customChord.customChord}></ChordBox>}
+      {customChord && (
+        <ChordBox
+          className="bg-gray-300"
+          chord={customChord.customChord}
+        ></ChordBox>
+      )}
     </div>
   );
 };

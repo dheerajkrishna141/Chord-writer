@@ -1,5 +1,6 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { MetaDataContext } from "../stateManagement/metaDataContext";
+import { parseMetaDataSavedState } from "../functions/helperFunctions";
 
 export interface MetaData {
   title: string;
@@ -7,10 +8,23 @@ export interface MetaData {
   tempo: string;
 }
 const MetaData = () => {
+  const savedState = localStorage.getItem("metaDataState");
+
   const context = useContext(MetaDataContext);
+  const savedMetaData = savedState
+    ? parseMetaDataSavedState(savedState)
+    : undefined;
   const title = context.songMetaData.title;
   const scale = context.songMetaData.scale;
   const tempo = context.songMetaData.tempo;
+  const setMetaData = context.setSongMetaData;
+
+  useEffect(() => {
+    if (savedMetaData) {
+      setMetaData(savedMetaData.songMetaData);
+      console.log("MetaData mounted with saved state:", savedMetaData);
+    }
+  }, []);
   return (
     <div className="m-5 mb-10 flex justify-center items-center">
       <div className=" mx-auto">

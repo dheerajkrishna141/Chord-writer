@@ -5,9 +5,10 @@ import { ChordContext } from "../stateManagement/chordContext";
 
 interface dropBoxProps extends PropsWithChildren {
   id: string;
+  animateOnDrag: boolean;
 }
 
-const DropBox = ({ children, id }: dropBoxProps) => {
+const DropBox = ({ children, id, animateOnDrag }: dropBoxProps) => {
   const context = useContext(ChordContext);
 
   const { setNodeRef, isOver } = useDroppable({
@@ -17,7 +18,7 @@ const DropBox = ({ children, id }: dropBoxProps) => {
   const controls = useAnimationControls();
 
   useEffect(() => {
-    if (context.isDragging) {
+    if (context.isDragging && animateOnDrag) {
       if (isOver) {
         controls.stop();
         controls.start("hover");

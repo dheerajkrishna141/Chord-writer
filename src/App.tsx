@@ -1,11 +1,9 @@
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
-import html2canvas from "html2canvas-pro";
-import jsPDF from "jspdf";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import "./App.css";
-import Canvas, { CanvasState } from "./components/Canvas";
+import Canvas, { CanvasType } from "./components/Canvas";
+import ChordBar from "./components/ChordBar";
 import { Chord } from "./components/ChordConfigBar";
-import DropBox from "./components/DropBox";
 import Hero from "./components/Hero";
 import { MetaData } from "./components/MetaData";
 import { ChordContext } from "./stateManagement/chordContext";
@@ -20,7 +18,7 @@ function App() {
   const [potentialChords, setPotentialChords] = useState<Chord[]>([]);
   const [customChord, setCustomChord] = useState<Chord>({} as Chord);
   const [songMetaData, setSongMetaData] = useState({} as MetaData);
-  const [canvas, setCanvas] = useState<CanvasState[]>([]);
+  const [canvas, setCanvas] = useState<CanvasType[]>([]);
   const [isDragging, setIsDragging] = useState(false);
 
   const handleDragStart = () => {
@@ -37,22 +35,30 @@ function App() {
     console.log("active Id", activeId);
     console.log("over Id", overId);
 
+    if (overId.startsWith("add")) return;
+
     if (overId === "deleteBox") {
+      if (!activeId.includes("-")) {
+        return;
+      }
       setChordsToRender((prev) =>
         prev.filter((chord) => chord.id !== activeId)
       );
+
       setCanvas((prev) => {
         const newCanvas = [...prev];
-        const lyricIndex = parseInt(activeId.split("-")[1]);
-        const chordIndex = parseInt(activeId.split("-")[2]);
-        const Chords = newCanvas[lyricIndex].ChordBoxes;
-        if (Chords[chordIndex]) {
-          Chords[chordIndex].count = Math.max(
-            (Chords[chordIndex].count || 1) - 1,
+        const sectionIndex = parseInt(activeId.split("-")[1]);
+        const lyricIndex = parseInt(activeId.split("-")[2]);
+        const chordBoxIndex = parseInt(activeId.split("-")[3]);
+        const currentSection = newCanvas[sectionIndex].SectionState[lyricIndex];
+        const chords = currentSection.ChordBoxes;
+        if (chords[chordBoxIndex]) {
+          chords[chordBoxIndex].count = Math.max(
+            (chords[chordBoxIndex].count || 1) - 1,
             0
           );
-          if (Chords[chordIndex].count === 0) {
-            Chords[chordIndex].isEmpty = true;
+          if (chords[chordBoxIndex].count === 0) {
+            chords[chordBoxIndex].isEmpty = true;
           }
         }
         return newCanvas;
@@ -70,21 +76,20 @@ function App() {
     }
     const newChord = {
       ...draggedChord,
-      id: `${draggedChord.rootNote}${chordsToRender.length}-${overId.substring(
-        6
-      )}`,
+      id: `${draggedChord.rootNote}${Date.now()}-${overId}`,
     };
 
     setCanvas((prev) => {
+      const sectionIndex = parseInt(overId.split("-")[0]);
       const lyricIndex = parseInt(overId.split("-")[1]);
       const chordBoxIndex = parseInt(overId.split("-")[2]);
       const newCanvas = [...prev];
-      const currentBox = newCanvas[lyricIndex].ChordBoxes[chordBoxIndex];
-      newCanvas[lyricIndex].ChordBoxes[chordBoxIndex] = {
+      const currentSection = newCanvas[sectionIndex].SectionState[lyricIndex];
+      const currentBox = currentSection.ChordBoxes[chordBoxIndex];
+      currentSection.ChordBoxes[chordBoxIndex] = {
         count: (currentBox?.count || 0) + 1,
         isEmpty: false,
       };
-
       return newCanvas;
     });
 
@@ -100,7 +105,11 @@ function App() {
   return (
     <>
       <div className="p-10  bg-white ">
-        <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <DndContext
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          autoScroll={false}
+        >
           <ChordContext.Provider
             value={{
               canvasState: canvas,
@@ -120,9 +129,9 @@ function App() {
                 setSongMetaData: setSongMetaData,
               }}
             >
-              <div className="flex flex-col lg:justify-center lg:items-center overflow-auto">
+              <div className="flex flex-col lg:justify-center lg:items-center ">
                 <Hero />
-
+                <ChordBar />
                 <Canvas />
 
                 <div className="download p-2 bg-blue-500 rounded-md w-fit">

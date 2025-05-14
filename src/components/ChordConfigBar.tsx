@@ -110,10 +110,6 @@ const ChordConfigBar = () => {
           }
         ></input>
       </div>
-
-      <div>
-        <CustomChord></CustomChord>
-      </div>
     </div>
   );
 };

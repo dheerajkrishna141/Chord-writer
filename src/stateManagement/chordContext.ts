@@ -1,6 +1,6 @@
 import React, { Dispatch } from "react";
 import { renderChords } from "../App";
-import { CanvasState } from "../components/Canvas";
+import { CanvasType } from "../components/Canvas";
 import { Chord } from "../components/ChordConfigBar";
 
 export interface chordContext {
@@ -10,8 +10,8 @@ export interface chordContext {
   setChordsToRender: Dispatch<React.SetStateAction<renderChords[]>>;
   customChord: Chord;
   setCustomChord: Dispatch<React.SetStateAction<Chord>>;
-  canvasState: CanvasState[];
-  setCanvasState: Dispatch<React.SetStateAction<CanvasState[]>>;
+  canvasState: CanvasType[];
+  setCanvasState: Dispatch<React.SetStateAction<CanvasType[]>>;
   isDragging: boolean;
 }
 
