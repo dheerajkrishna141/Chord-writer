@@ -6,6 +6,7 @@ import useLocalStorage from "../stateManagement/useLocalStorage";
 import MetaData from "./MetaData";
 import Section from "./Section";
 import { MdClose } from "react-icons/md";
+import { MetaDataContext } from "../stateManagement/metaDataContext";
 
 export interface SectionState {
   ChordBoxes: { isEmpty: boolean; count: number }[];
@@ -19,8 +20,10 @@ export interface CanvasType {
 
 const Canvas = () => {
   const [sectionFocus, setSectionFocus] = useState(false);
+  const [textSizeState, setTextSizeState] = useState("");
 
   const context = useContext(ChordContext);
+  const metaDataContext = useContext(MetaDataContext);
   const { getItem } = useLocalStorage("canvasState");
   const savedState = getItem()
     ? parseCanvasSavedState(getItem() || "")
@@ -29,6 +32,7 @@ const Canvas = () => {
   const canvas = context.canvasState;
   const setCanvas = context.setCanvasState;
   const setChordsToRender = context.setChordsToRender;
+  const textSize = metaDataContext.songMetaData.textSize;
 
   const addSection = () => {
     setCanvas((prev) => {
@@ -120,8 +124,22 @@ const Canvas = () => {
     console.log("Canvas mounted with saved state:", savedState);
   }, []);
 
+  useEffect(() => {
+    switch (textSize) {
+      case "small":
+        setTextSizeState("text-lg");
+        break;
+      case "medium":
+        setTextSizeState("text-xl");
+        break;
+      case "large":
+        setTextSizeState("text-2xl");
+        break;
+    }
+  }, [textSize]);
+
   return (
-    <div className="canvas-content border-2 border-gray-300 rounded-md p-4 w-[8.5in] h-fit bg-white ">
+    <div className="canvas-content border-2 border-gray-300 rounded-md p-2 sm:p-4 w-[400px] sm:w-fit lg:w-[8.5in] h-fit mt-5 bg-white ">
       <MetaData></MetaData>
       <div className="flex flex-col gap-4 ">
         {canvas.map((canvasItem, sectionIndex) => {
@@ -133,18 +151,21 @@ const Canvas = () => {
               onMouseLeave={() => setSectionFocus(false)}
             >
               {sectionFocus && (
-                <div
-                  onClick={() => handleSectionDelete(sectionIndex)}
-                  className="remove-lyric absolute top-0 right-0 p-2 cursor-pointer hover:scale-105 transition-all duration-100 ease-in-out"
-                >
-                  <MdClose color="red" size={"30px"} />
+                <div className="print-hide absolute top-0 right-0 p-2  hover:scale-105 transition-all duration-100 ease-in-out">
+                  <button
+                    className="btn-remove-section"
+                    onClick={() => handleSectionDelete(sectionIndex)}
+                  >
+                    <i className="fas fa-times"></i>
+                  </button>
                 </div>
               )}
 
               <div>
                 <input
                   type="text"
-                  className=" mb-3 mt-1 text-2xl"
+                  style={{ width: "100%" }}
+                  className={`section-title mb-1 mt-1 ${textSizeState}`}
                   placeholder="Sub Heading"
                   value={canvasItem.SubHeading}
                   onChange={(e) =>
@@ -164,22 +185,20 @@ const Canvas = () => {
                 );
               })}
               <button
-                className="add-lyric flex justify-center items-center gap-2 bg-blue-500 text-white rounded-md px-2 py-1 mt-4 cursor-pointer hover:scale-102 transition-all duration-20 ease-in-out"
+                className="print-hide btn btn-secondary text-xs mt-3"
                 onClick={() => addLyric(sectionIndex)}
               >
-                <IoAddCircleSharp />
-                ADD LYRIC
+                <i className="fas fa-plus-circle mr-1"></i>Add Lyric
               </button>
             </div>
           );
         })}
-        <button
-          className="add-lyric flex justify-center items-center gap-2 bg-blue-500 text-white rounded-md px-2 py-1 mt-4 cursor-pointer hover:scale-102 transition-all duration-20 ease-in-out"
-          onClick={addSection}
-        >
-          <IoAddCircleSharp />
-          ADD SECTION
-        </button>
+
+        <div className="print-hide text-center mt-8">
+          <button onClick={addSection} className="btn btn-secondary w-full">
+            <i className="fas fa-layer-group mr-2"></i>Add Section
+          </button>
+        </div>
       </div>
     </div>
   );

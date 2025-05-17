@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { renderChords } from "../App";
 import { ChordContext } from "../stateManagement/chordContext";
 import { SectionState } from "./Canvas";
 import ChordBox from "./ChordBox";
 import DropBox from "./DropBox";
 import DynamicDropBox from "./DynamicDropBox";
+import { MetaDataContext } from "../stateManagement/metaDataContext";
+import { text } from "framer-motion/client";
 
 interface props {
   sectionItem: SectionState;
@@ -18,9 +20,27 @@ const Section = ({
   chordsToRender,
   sectionIndex,
 }: props) => {
-  const context = React.useContext(ChordContext);
+  const context = useContext(ChordContext);
+  const metaDataContext = useContext(MetaDataContext);
   const setChordsToRender = context.setChordsToRender;
   const setCanvas = context.setCanvasState;
+  const textSize = metaDataContext.songMetaData.textSize;
+
+  const [textSizeState, setTextSizeState] = useState("");
+
+  useEffect(() => {
+    switch (textSize) {
+      case "small":
+        setTextSizeState("text-sm");
+        break;
+      case "medium":
+        setTextSizeState("text-base");
+        break;
+      case "large":
+        setTextSizeState("text-lg");
+        break;
+    }
+  }, [textSize]);
 
   const deleteChordBox =
     (lyricIndex: number, chordBoxIndex: number, sectionIndex: number) => () => {
@@ -88,9 +108,9 @@ const Section = ({
   };
   return (
     <div>
-      <div className="flex flex-col gap-2 mb-4">
-        <div>
-          <div className="relative flex gap-1 items-center text-lg">
+      <div className="flex flex-col  mb-2">
+        <div className="flex flex-col ">
+          <div className={`relative flex gap-1 items-center ${textSizeState}`}>
             {sectionItem.ChordBoxes.map((currentChordBox, chordBoxIndex) => (
               <div className="flex gap-1 items-center" key={chordBoxIndex}>
                 <DropBox
@@ -99,7 +119,7 @@ const Section = ({
                 >
                   {currentChordBox.isEmpty ? (
                     <div
-                      className="text-red-400 mx-auto text-center cursor-pointer"
+                      className="text-red-400 mx-auto text-center w-5 cursor-pointer"
                       onClick={deleteChordBox(
                         lyricIndex,
                         chordBoxIndex,
@@ -126,7 +146,7 @@ const Section = ({
                             />
                             {currentChordBox.count > 1 &&
                               index < relevantChords.length - 1 && (
-                                <p className="mt-1 mr-0.5">,</p>
+                                <p className="mx-[2px] mr-[3px]">,</p>
                               )}
                           </>
                         ));
@@ -144,30 +164,33 @@ const Section = ({
             <input
               value={sectionItem.Multiplier}
               placeholder="Enter Multiplier"
-              className="remove-multiplier"
+              className="print-hide"
               onChange={(e) => setMultiplier(e.target.value, lyricIndex)}
               type="number"
             ></input>
           </div>
-          <input
-            className="w-100 text-lg"
-            value={sectionItem.Lyrics}
-            placeholder="lyrics go here..."
-            onChange={(e) => {
-              setCanvas((prev) => {
-                const newCanvas = [...prev];
-                newCanvas[sectionIndex].SectionState[lyricIndex].Lyrics =
-                  e.target.value;
-                return newCanvas;
-              });
-            }}
-          ></input>
-          <button
-            onClick={removeLyric(lyricIndex, sectionIndex)}
-            className="remove-lyric px-2 py-1 bg-red-400 rounded-md text-white cursor-pointer"
-          >
-            Remove
-          </button>
+          <div className="flex">
+            <input
+              className={`w-100 ${textSizeState} lyric-input`}
+              value={sectionItem.Lyrics}
+              placeholder="lyrics go here..."
+              onChange={(e) => {
+                setCanvas((prev) => {
+                  const newCanvas = [...prev];
+                  newCanvas[sectionIndex].SectionState[lyricIndex].Lyrics =
+                    e.target.value;
+                  return newCanvas;
+                });
+              }}
+            ></input>
+
+            <button
+              className="btn-remove-lyric print-hide"
+              onClick={removeLyric(lyricIndex, sectionIndex)}
+            >
+              <i className="fas fa-times"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -13,6 +13,8 @@ export interface chordContext {
   canvasState: CanvasType[];
   setCanvasState: Dispatch<React.SetStateAction<CanvasType[]>>;
   isDragging: boolean;
+  setActiveDragId: Dispatch<React.SetStateAction<string | null>>;
+  activeDragId: string | null;
 }
 
 export const ChordContext = React.createContext<chordContext>(
