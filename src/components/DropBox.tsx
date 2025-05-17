@@ -35,7 +35,7 @@ const DropBox = ({ children, id, animateOnDrag }: dropBoxProps) => {
   return (
     <motion.div
       ref={setNodeRef}
-      className=" rounded-md min-w-5 min-h-5 h-fit w-fit "
+      className=" rounded-md h-fit w-fit "
       animate={controls}
       transition={{
         duration: 2,

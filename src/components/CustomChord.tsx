@@ -1,27 +1,30 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { rootNotes, scales } from "../data/ChordConfigData";
 import { customChordMaker } from "../functions/helperFunctions";
 import { ChordContext } from "../stateManagement/chordContext";
-import ChordBox from "./ChordBox";
 import { Chord } from "./ChordConfigBar";
 
 const CustomChord = () => {
   const [selectedChord, setSelectedChord] = useState<Chord>({} as Chord);
-  const customChord = useContext(ChordContext);
+  const context = useContext(ChordContext);
 
-  useEffect(() => {
+  const handleClick = () => {
     if (selectedChord.rootNote && selectedChord.scale) {
       const finalChord = customChordMaker(selectedChord);
-      customChord?.setCustomChord(finalChord);
+      context?.setPotentialChords((prev) => {
+        if (prev.some((obj) => obj.id === finalChord.id)) return prev;
+        return [...prev, finalChord];
+      });
     }
-  }, [selectedChord]);
+  };
 
   return (
-    <div className="border-2 border-gray-300 rounded-md flex flex-col gap-4 p-4">
-      <h3>Custom Chord</h3>
-      <div className="flex gap-2">
+    <div className="rounded-md hidden md:flex flex-col   ">
+      <p className="font-display text-xl text-center text-[#E2E8F0] mb-2">
+        CUSTOM CHORD
+      </p>
+      <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2">
-          <h4>Root Note</h4>
           <select
             name="rootNotes"
             onChange={(e) =>
@@ -31,16 +34,15 @@ const CustomChord = () => {
               })
             }
           >
-            <option value="">Select a root note</option>
+            <option value="">Root: </option>
             {rootNotes.map((note) => (
               <option key={note.id} value={note.name}>
-                {note.name}
+                Root: {note.name}
               </option>
             ))}
           </select>
         </div>
         <div className="flex flex-col gap-2">
-          <h4>Scale</h4>
           <select
             name="chordType"
             onChange={(e) =>
@@ -50,21 +52,21 @@ const CustomChord = () => {
               })
             }
           >
-            <option value="">Select a scale</option>
+            <option value="">Type: </option>
             {scales.map((scale) => (
               <option key={scale.id} value={scale.name}>
-                {scale.name}
+                Type: {scale.name}
               </option>
             ))}
           </select>
         </div>
       </div>
-      {customChord && (
-        <ChordBox
-          className="bg-gray-300"
-          chord={customChord.customChord}
-        ></ChordBox>
-      )}
+      <button
+        onClick={handleClick}
+        className="btn btn-primary w-full mt-2 text-sm"
+      >
+        Add to Palette
+      </button>
     </div>
   );
 };

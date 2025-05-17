@@ -15,8 +15,7 @@ const ChordBox = ({ chord, isPlaced, className }: props) => {
 
   var style = {
     zIndex: isDragging ? 11 : 0,
-    padding: isPlaced ? "0.2rem" : "0.5rem",
-    cursor: "pointer",
+
     transition: "background-color 0.2s ease-in-out",
     ...(transform
       ? {
@@ -34,7 +33,9 @@ const ChordBox = ({ chord, isPlaced, className }: props) => {
       {...listeners}
       {...attributes}
       style={style}
-      className={`${className} rounded-lg w-fit z-1`}
+      className={`${className} ${
+        isPlaced ? `draggable-placed` : `draggable`
+      } rounded-lg w-fit z-1`}
     >
       {chord.rootNote}
       <span className="text-sm">{renderSuffix}</span>

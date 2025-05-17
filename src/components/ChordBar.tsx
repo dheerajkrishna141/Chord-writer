@@ -1,35 +1,21 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { ChordContext } from "../stateManagement/chordContext";
-import { MetaDataContext } from "../stateManagement/metaDataContext";
-import useLocalStorage from "../stateManagement/useLocalStorage";
 import ChordBox from "./ChordBox";
 import CustomChord from "./CustomChord";
 import DeleteBox from "./DeleteBox";
 
 const ChordBar = () => {
   const context = useContext(ChordContext);
-  const metaContext = useContext(MetaDataContext);
-  const { setItem } = useLocalStorage("canvasState");
-  const { setItem: setChordContextItem } = useLocalStorage("metaDataState");
-  const handleSave = () => {
-    setItem(context);
-    setChordContextItem(metaContext);
-  };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      handleSave();
-    }, 1 * 60 * 1000); // 1 minute in milliseconds
-
-    return () => clearInterval(interval); // Cleanup on component unmount
-  }, [context]);
   return (
-    <div className="chord-bar sticky top-0 bg-white z-10 p-5 shadow-md rounded-md m-5">
-      <div className="flex gap-5 items-center">
+    <div className="print-hide card sticky top-20 h-fit z-10 p-5 shadow-md rounded-md m-5 w-fit ">
+      <div className="flex flex-col gap-5 items-center">
         <div className="flex-col  gap-2">
-          <div>
-            <h1>Chords</h1>
-            <div className="flex gap-2">
+          <p className="font-display text-2xl text-center text-[#E2E8F0] mb-4">
+            CHORD PALETTE
+          </p>
+          <div className="flex justify-center">
+            <div className="inline-grid grid-cols-2 lg:grid-cols-3 gap-2 w-auto">
               {context?.potentialChords &&
                 context.potentialChords.map((chord, index) => (
                   <ChordBox
@@ -41,16 +27,11 @@ const ChordBar = () => {
                 ))}
             </div>
           </div>
-          <div>
-            <h1>Drop here to delete</h1>
-            <DeleteBox id="deleteBox"></DeleteBox>
-          </div>
         </div>
         <CustomChord />
-      </div>
-
-      <div>
-        <button onClick={handleSave}>Save</button>
+        <div className="mt-2 pt-4 border-t-2 border-dashed rgba(226, 232, 240, 0.6)">
+          <DeleteBox id="deleteBox"></DeleteBox>
+        </div>
       </div>
     </div>
   );

@@ -1,10 +1,17 @@
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { useState } from "react";
 import "./App.css";
 import Canvas, { CanvasType } from "./components/Canvas";
 import ChordBar from "./components/ChordBar";
-import { Chord } from "./components/ChordConfigBar";
-import Hero from "./components/Hero";
+import ChordConfigBar, { Chord } from "./components/ChordConfigBar";
 import { MetaData } from "./components/MetaData";
 import { ChordContext } from "./stateManagement/chordContext";
 import { MetaDataContext } from "./stateManagement/metaDataContext";
@@ -20,8 +27,10 @@ function App() {
   const [songMetaData, setSongMetaData] = useState({} as MetaData);
   const [canvas, setCanvas] = useState<CanvasType[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [activeDragId, setActiveDragId] = useState<string | null>(null);
 
-  const handleDragStart = () => {
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveDragId(event.active.id as string);
     setIsDragging(true);
   };
 
@@ -68,7 +77,7 @@ function App() {
     }
     var draggedChord = potentialChords.find((chord) => chord.id === activeId);
     if (!draggedChord) {
-      if (customChord.id === activeId) {
+      if (activeId.startsWith("custom")) {
         draggedChord = customChord;
       } else {
         return chordsToRender;
@@ -102,16 +111,20 @@ function App() {
     console.log("canvas", canvas);
   };
 
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor));
   return (
     <>
-      <div className="p-10  bg-white ">
+      <div className="m-10 ">
         <DndContext
+          sensors={sensors}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
           autoScroll={false}
         >
           <ChordContext.Provider
             value={{
+              activeDragId: activeDragId,
+              setActiveDragId: setActiveDragId,
               canvasState: canvas,
               setCanvasState: setCanvas,
               chordsToRender: chordsToRender,
@@ -129,13 +142,20 @@ function App() {
                 setSongMetaData: setSongMetaData,
               }}
             >
-              <div className="flex flex-col lg:justify-center lg:items-center ">
-                <Hero />
-                <ChordBar />
-                <Canvas />
-
-                <div className="download p-2 bg-blue-500 rounded-md w-fit">
-                  <button>Download</button>
+              <div className="flex flex-col justify-center items-center">
+                <div className="chord-config">
+                  <ChordConfigBar />
+                </div>
+                <div className="flex flex-col md:flex-row ">
+                  <ChordBar />
+                  <div>
+                    <Canvas />
+                    <div className="print-hide container mx-auto mt-4 px-4 md:px-6 pb-6 text-center">
+                      <button onClick={window.print} className="btn btn-green">
+                        <i className="fas fa-print mr-2"></i>Print to PDF
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </MetaDataContext.Provider>

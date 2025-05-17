@@ -12,11 +12,14 @@ const DynamicDropBox = ({ id }: dynamicDropBoxProps) => {
   const [isHover, setIsHover] = useState(false);
 
   const context = useContext(ChordContext);
-
+  const activeId = context.activeDragId;
   const controls = useAnimationControls();
 
   useEffect(() => {
     if (isOver) {
+      if (activeId && activeId.includes("-")) {
+        return;
+      }
       controls.start("hover").then(() => {
         context.setCanvasState((prev) => {
           const newCanvas = [...prev];
@@ -49,7 +52,7 @@ const DynamicDropBox = ({ id }: dynamicDropBoxProps) => {
         },
         hover: { scale: 2 },
       }}
-      className="remove-dynamicDrop rounded-md min-w-5 min-h-5 h-fit w-fit flex items-center justify-center"
+      className="print-hide rounded-md  h-fit w-fit flex items-center justify-center"
     >
       {isHover ? (
         <div className="flex-col">

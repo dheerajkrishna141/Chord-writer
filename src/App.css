@@ -2,33 +2,238 @@
   margin: 0;
 }
 @media print {
-  .chord-config {
-    display: none;
-  }
-  .download {
-    display: none;
-  }
-  .add-lyric {
-    display: none;
-  }
-
-  .chord-bar {
-    display: none;
-  }
-
-  .remove-lyric {
-    display: none;
-  }
-  .remove-dynamicDrop {
-    display: none;
-  }
-  .remove-multiplier {
+  .print-hide {
     display: none;
   }
   .canvas-content {
+    padding: 1rem;
     width: 7.5in;
     height: fit-content;
     margin: -30px 0 auto;
-    border: none;
+    border: none !important;
+    box-shadow: none !important;
   }
+  .canvas-content .section-title {
+    font-family: "DM Sans", sans-serif !important;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.2rem;
+    color: black !important; /* Black */
+    border-bottom: none !important; /* Vibrant Blue */
+  }
+  .canvas-content .lyric-input {
+    border-bottom: none !important;
+  }
+}
+
+.draggable {
+  touch-action: none;
+  cursor: grab;
+  background-color: #e2e8f0; /* White/Light Gray for draggable */
+  color: #2d3748; /* Dark Blue/Indigo text */
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-family: "Roboto Mono", monospace;
+  font-weight: bold;
+  font-size: 0.9rem;
+  border: 2px solid #cbd5e0; /* Slightly darker White/Gray border */
+  box-shadow: 2px 2px 0px #cbd5e0; /* Shadow */
+  text-align: center;
+  min-width: 50px;
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+}
+
+.draggable-placed {
+  cursor: grab;
+}
+.draggable-placed:hover {
+  box-shadow: 4px 4px 0px #cbd5e0; /* Shadow on hover */
+  transform: scale(1.05);
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+}
+.draggable-placed:active {
+  cursor: grabbing;
+}
+
+.draggable:active {
+  cursor: grabbing;
+  min-width: 10px;
+  transition: min-width 1s ease, width 1s ease;
+}
+.section-title {
+  /* For section titles on DARK cards */
+  font-weight: bold;
+  color: #e2e8f0; /* Light Gray/White text */
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 3px dotted rgba(226, 232, 240, 0.6); /* Light Gray/White (semi-transparent) */
+}
+
+.section-title:focus {
+  outline: none;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  background-color: #1a202c; /* Very Dark Indigo/Near Black */
+  color: #e2e8f0; /* Light Gray/Almost White for text on dark body */
+}
+.font-display {
+  /* For headings, song titles */
+  font-family: "Lilita One", cursive; /* Chunky, fun retro-ish font */
+}
+.font-mono-retro {
+  /* For chords or specific labels */
+  font-family: "Roboto Mono", monospace;
+}
+
+.card {
+  background-color: #2d3748; /* Dark Blue/Indigo (lighter than body) */
+  border: 2px solid #63b3ed; /* Vibrant Blue border */
+  border-radius: 12px; /* Chonkier rounded corners */
+  box-shadow: 4px 4px 0px #63b3ed; /* Vibrant Blue hard shadow */
+  padding: 1.5rem;
+}
+
+.canvas-content {
+  background-color: #ffffff; /* Pure White */
+  border: 2px solid #63b3ed; /* Vibrant Blue border for contrast */
+  border-radius: 12px;
+  box-shadow: 4px 4px 0px #63b3ed; /* Vibrant Blue hard shadow */
+  padding: 1.5rem;
+  color: #1a202c;
+}
+
+.canvas-content .section-title {
+  color: #63b3ed; /* Vibrant Blue */
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid #90cdf4;
+}
+
+.chord-config-bar input,
+select {
+  background-color: #1a202c; /* Very Dark Indigo input background */
+  border: 2px solid #e2e8f0; /* White/Light Gray border */
+  color: #e2e8f0; /* Light Gray/White text for inputs */
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  font-family: "DM Sans", sans-serif;
+  box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.chord-config-bar input:focus,
+select:focus {
+  outline: none;
+  border-color: #63b3ed; /* Vibrant Blue accent for focus */
+  box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.2),
+    0 0 0 2px rgba(99, 179, 237, 0.4);
+}
+
+.btn {
+  padding: 0.5rem 1.5rem;
+  border-radius: 20px; /* Pill shape or very rounded */
+  font-family: "Lilita One", cursive;
+
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: 2px solid transparent;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+.btn:active {
+  transform: translateY(2px) translateX(2px);
+}
+.btn-primary {
+  /* White on Dark cards, Blue on White canvas */
+  background-color: #e2e8f0; /* White/Light Gray */
+  color: #2d3748; /* Dark Blue/Indigo text for contrast */
+  border-color: #cbd5e0; /* Slightly darker White/Gray border */
+  box-shadow: 3px 3px 0px #cbd5e0; /* Shadow */
+}
+.btn-primary:hover {
+  background-color: #cbd5e0;
+}
+.btn-primary:active {
+  box-shadow: 1px 1px 0px #cbd5e0;
+}
+
+.btn-secondary {
+  /* Vibrant Blue */
+  background-color: #63b3ed;
+  color: #ffffff;
+  border-color: #4299e1; /* Darker Vibrant Blue border */
+  box-shadow: 3px 3px 0px #4299e1; /* Darker Vibrant Blue shadow */
+}
+.btn-secondary:hover {
+  background-color: #4299e1;
+}
+.btn-secondary:active {
+  box-shadow: 1px 1px 0px #4299e1;
+}
+
+.btn-green {
+  background-color: #48bb78; /* Green */
+  color: #ffffff;
+  border-color: #38a169; /* Darker Green border */
+  box-shadow: 3px 3px 0px #38a169; /* Darker Green shadow */
+}
+.btn-green:hover {
+  background-color: #38a169;
+}
+.btn-green:active {
+  box-shadow: 1px 1px 0px #38a169;
+}
+
+/* Lyric input on WHITE song canvas */
+.canvas-content .lyric-input {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px dashed #a0aec0; /* Medium Gray dashed line on white */
+  color: #1a202c; /* Black/Very Dark Indigo text */
+  width: 100%;
+}
+.canvas-content .lyric-input:focus {
+  outline: none;
+  border-bottom-color: #63b3ed; /* Vibrant Blue focus */
+  border-bottom-style: solid;
+}
+.btn-remove-lyric {
+  cursor: pointer;
+  background-color: #e53e3e; /* Red */
+  color: white;
+  padding: 0.25rem 0.5rem; /* Smaller padding */
+  border-radius: 9999px; /* Fully rounded */
+  font-size: 0.75rem; /* Smaller font */
+  line-height: 1;
+  border: 1px solid #c53030; /* Darker Red */
+  box-shadow: 2px 2px 0px #c53030;
+  /* margin-left: 0.5rem; /* Space from lyric input - handled by gap in flex container */
+}
+.btn-remove-lyric:hover {
+  background-color: #c53030;
+}
+.btn-remove-lyric:active {
+  transform: translateY(1px) translateX(1px);
+  box-shadow: 1px 1px 0px #c53030;
+}
+
+.btn-remove-section {
+  cursor: pointer;
+  background-color: #e53e3e; /* Red */
+  color: white;
+  padding: 0.35rem 0.65rem; /* Slightly larger than lyric remove */
+  border-radius: 8px; /* Retro chunky square-ish */
+  font-size: 0.9rem;
+  line-height: 1;
+  border: 1px solid #c53030; /* Darker Red */
+  box-shadow: 2px 2px 0px #c53030;
+  /* margin-left: 0.75rem; /* Space from section title - handled by gap in flex container */
+}
+.btn-remove-section:hover {
+  background-color: #c53030;
+}
+.btn-remove-section:active {
+  transform: translateY(1px) translateX(1px);
+  box-shadow: 1px 1px 0px #c53030;
 }

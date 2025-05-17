@@ -1,8 +1,6 @@
 import { useDroppable } from "@dnd-kit/core";
+import { useAnimationControls } from "framer-motion";
 import { PropsWithChildren, useEffect } from "react";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { BsTrash2Fill } from "react-icons/bs";
-import { motion, useAnimationControls } from "framer-motion";
 
 interface dropBoxProps extends PropsWithChildren {
   id: string;
@@ -24,25 +22,16 @@ const DeleteBox = ({ children, id }: dropBoxProps) => {
   }, [isOver]);
 
   return (
-    <motion.div
-      animate={controls}
-      ref={setNodeRef}
-      className=" rounded-md min-w-5 min-h-5 h-fit w-fit  hover:scale-150 transition-all duration-200 ease-in-out"
-      variants={{
-        initial: {
-          scale: 1,
-          transition: { duration: 0, ease: "easeInOut" },
-        },
-        hover: { scale: 2, transition: { duration: 0, ease: "easeInOut" } },
-      }}
-    >
-      {isOver ? (
-        <BsTrash2Fill color="red" size={"25px"} />
-      ) : (
-        <RiDeleteBin6Line color="red" size={"25px"} />
-      )}
+    <div ref={setNodeRef}>
+      <div
+        className={` ${
+          isOver ? `border-red-300 text-red-300` : `text-[#E2E8F0]`
+        } mt-2 text-center p-3 bg-[#1A202C] border-2 border-dashed rgba(226, 232, 240, 0.6) rounded-md  hover:border-red-300 hover:text-red-300 transition-colors`}
+      >
+        <i className="fas fa-trash-alt fa-lg mr-2"></i> Drop here to delete
+      </div>
       {children}
-    </motion.div>
+    </div>
   );
 };
 
