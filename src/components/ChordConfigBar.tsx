@@ -74,7 +74,7 @@ const ChordConfigBar = () => {
   }, [chordConfig]);
 
   return (
-    <div className="relative print-hide chord-config-bar card flex flex-col items-center md:flex-row gap-4">
+    <div className="relative print-hide chord-config-bar card grid grid-cols-2 md:grid-cols-3  lg:grid-cols-6 gap-4 mb-5">
       <AnimatePresence mode="popLayout">
         {toastVisible && (
           <Toast
@@ -167,7 +167,7 @@ const ChordConfigBar = () => {
         </select>
       </div>
 
-      <div className="text-right md:pt-6 ml-20">
+      <div className="text-right md:pt-6 xl:ml-20 mt-auto mx-auto">
         <button
           onClick={() => handleSave(true)}
           className="btn btn-green text-sm"

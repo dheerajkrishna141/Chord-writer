@@ -4,7 +4,10 @@ import { customChordMaker } from "../functions/helperFunctions";
 import { ChordContext } from "../stateManagement/chordContext";
 import { Chord } from "./ChordConfigBar";
 
-const CustomChord = () => {
+interface props {
+  className?: string;
+}
+const CustomChord = ({ className }: props) => {
   const [selectedChord, setSelectedChord] = useState<Chord>({} as Chord);
   const context = useContext(ChordContext);
 
@@ -19,11 +22,11 @@ const CustomChord = () => {
   };
 
   return (
-    <div className="rounded-md hidden md:flex flex-col   ">
+    <div className={`rounded-md ${className} md:flex flex-col `}>
       <p className="font-display text-xl text-center text-[#E2E8F0] mb-2">
         CUSTOM CHORD
       </p>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
           <select
             name="rootNotes"
@@ -63,7 +66,7 @@ const CustomChord = () => {
       </div>
       <button
         onClick={handleClick}
-        className="btn btn-primary w-full mt-2 text-sm"
+        className="btn btn-primary w-full mt-5 text-sm"
       >
         Add to Palette
       </button>

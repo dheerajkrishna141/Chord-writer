@@ -15,6 +15,8 @@ import ChordConfigBar, { Chord } from "./components/ChordConfigBar";
 import { MetaData } from "./components/MetaData";
 import { ChordContext } from "./stateManagement/chordContext";
 import { MetaDataContext } from "./stateManagement/metaDataContext";
+import Aside from "./components/Aside";
+import { BiChevronLeft } from "react-icons/bi";
 
 export interface renderChords extends Chord {
   overid: string;
@@ -28,6 +30,7 @@ function App() {
   const [canvas, setCanvas] = useState<CanvasType[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
+  const [navActive, setNavActive] = useState(false);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveDragId(event.active.id as string);
@@ -142,11 +145,24 @@ function App() {
                 setSongMetaData: setSongMetaData,
               }}
             >
-              <div className="flex flex-col justify-center items-center">
+              <button
+                className="md:hidden btn btn-secondary mb-4"
+                onClick={() => setNavActive(!navActive)}
+              >
+                <i className="fas fa-music"></i>
+              </button>
+
+              <Aside NavActive={navActive} setNavActive={setNavActive} />
+              <div
+                className={`flex ${
+                  navActive &&
+                  `bg-black opacity-50 transition-all duration-300 ease-in-out`
+                } flex-col justify-center items-center`}
+              >
                 <div className="chord-config">
                   <ChordConfigBar />
                 </div>
-                <div className="flex flex-col md:flex-row ">
+                <div className="flex flex-col md:flex-row md:gap-5">
                   <ChordBar />
                   <div>
                     <Canvas />

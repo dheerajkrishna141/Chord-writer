@@ -61,15 +61,28 @@
 }
 .section-title {
   /* For section titles on DARK cards */
-  font-weight: bold;
+  font-weight: 500;
   color: #e2e8f0; /* Light Gray/White text */
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.25rem;
   border-bottom: 3px dotted rgba(226, 232, 240, 0.6); /* Light Gray/White (semi-transparent) */
 }
 
 .section-title:focus {
   outline: none;
+}
+
+.aside {
+  background-color: #2d3748;
+  border-right: 2px solid #63b3ed;
+  color: #1a202c;
+  padding: 1.5rem;
+  padding-top: 5rem;
+  left: -100%;
+  width: 70%;
+  transition: all 0.3s ease-in-out;
+}
+
+.aside.active {
+  left: 0;
 }
 
 body {
@@ -130,7 +143,7 @@ select:focus {
 }
 
 .btn {
-  padding: 0.5rem 1.5rem;
+  padding: 0.5rem 1rem;
   border-radius: 20px; /* Pill shape or very rounded */
   font-family: "Lilita One", cursive;
 

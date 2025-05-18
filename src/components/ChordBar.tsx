@@ -8,14 +8,17 @@ const ChordBar = () => {
   const context = useContext(ChordContext);
 
   return (
-    <div className="print-hide card sticky top-20 h-fit z-10 p-5 shadow-md rounded-md m-5 w-fit ">
+    <div className="print-hide card sticky top-20 h-fit z-10 p-5 shadow-md rounded-md m-5 w-fit mx-auto">
       <div className="flex flex-col gap-5 items-center">
         <div className="flex-col  gap-2">
           <p className="font-display text-2xl text-center text-[#E2E8F0] mb-4">
             CHORD PALETTE
           </p>
           <div className="flex justify-center">
-            <div className="inline-grid grid-cols-2 lg:grid-cols-3 gap-2 w-auto">
+            <div
+              className="inline-grid grid-cols-5 md:grid-cols-3 gap-3 w-fit "
+              style={{ gridTemplateColumns: "repeat(5, auto)" }}
+            >
               {context?.potentialChords &&
                 context.potentialChords.map((chord, index) => (
                   <ChordBox
@@ -28,7 +31,7 @@ const ChordBar = () => {
             </div>
           </div>
         </div>
-        <CustomChord />
+        <CustomChord className="hidden" />
         <div className="mt-2 pt-4 border-t-2 border-dashed rgba(226, 232, 240, 0.6)">
           <DeleteBox id="deleteBox"></DeleteBox>
         </div>

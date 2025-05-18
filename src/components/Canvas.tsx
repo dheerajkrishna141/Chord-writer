@@ -1,12 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { IoAddCircleSharp } from "react-icons/io5";
 import { parseCanvasSavedState } from "../functions/helperFunctions";
 import { ChordContext } from "../stateManagement/chordContext";
+import { MetaDataContext } from "../stateManagement/metaDataContext";
 import useLocalStorage from "../stateManagement/useLocalStorage";
 import MetaData from "./MetaData";
 import Section from "./Section";
-import { MdClose } from "react-icons/md";
-import { MetaDataContext } from "../stateManagement/metaDataContext";
 
 export interface SectionState {
   ChordBoxes: { isEmpty: boolean; count: number }[];
@@ -165,7 +163,7 @@ const Canvas = () => {
                 <input
                   type="text"
                   style={{ width: "100%" }}
-                  className={`section-title mb-1 mt-1 ${textSizeState}`}
+                  className={`section-title ${textSizeState}`}
                   placeholder="Sub Heading"
                   value={canvasItem.SubHeading}
                   onChange={(e) =>
