@@ -16,9 +16,13 @@ export const rootNotes = [
 export const scales = [
   { id: "major", name: "Major", suffix: "" },
   { id: "minor", name: "Minor", suffix: "m" },
+  { id: "power", name: "Power Chord", suffix: "5" },
+];
+
+export const types = [
+  { id: "major", name: "Major", suffix: "" },
+  { id: "minor", name: "Minor", suffix: "m" },
   { id: "diminished", name: "Diminished", suffix: "dim" },
-  // { id: "augmented", name: "Augmented" },
-  // { id: "dominant7th", name: "Dominant 7th" },
   { id: "power", name: "Power Chord", suffix: "5" },
   { id: "major7th", name: "Major 7th", suffix: "7" },
   { id: "minor7th", name: "Minor 7th", suffix: "min7" },
@@ -26,6 +30,20 @@ export const scales = [
 
 //should look into this later
 export const timeSignatures = [{}];
+
+export const powerChordFamily = [
+  { count: 1, scale: "Power Chord" },
+  { count: 1, scale: "Power Chord" },
+  { count: 1, scale: "Power Chord" },
+  { count: 1, scale: "Power Chord" },
+  { count: 1, scale: "Power Chord" },
+  { count: 1, scale: "Power Chord" },
+  { count: 1, scale: "Power Chord" },
+  { count: 1, scale: "Power Chord" },
+  { count: 1, scale: "Power Chord" },
+  { count: 1, scale: "Power Chord" },
+  { count: 1, scale: "Power Chord" },
+];
 
 export const minorFamily = [
   { count: 2, scale: "Diminished" },

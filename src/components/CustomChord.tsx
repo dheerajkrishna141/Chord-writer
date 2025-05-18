@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { rootNotes, scales } from "../data/ChordConfigData";
+import { rootNotes, types } from "../data/ChordConfigData";
 import { customChordMaker } from "../functions/helperFunctions";
 import { ChordContext } from "../stateManagement/chordContext";
 import { Chord } from "./ChordConfigBar";
@@ -56,9 +56,9 @@ const CustomChord = ({ className }: props) => {
             }
           >
             <option value="">Type: </option>
-            {scales.map((scale) => (
-              <option key={scale.id} value={scale.name}>
-                Type: {scale.name}
+            {types.map((type) => (
+              <option key={type.id} value={type.name}>
+                Type: {type.name}
               </option>
             ))}
           </select>

@@ -1,5 +1,10 @@
 import { Chord } from "../components/ChordConfigBar";
-import { majorFamily, minorFamily, rootNotes } from "../data/ChordConfigData";
+import {
+  majorFamily,
+  minorFamily,
+  powerChordFamily,
+  rootNotes,
+} from "../data/ChordConfigData";
 import { chordContext } from "../stateManagement/chordContext";
 import { MetaDataContext } from "../stateManagement/metaDataContext";
 
@@ -13,7 +18,12 @@ export const potentialChordFinder = (chordConfig: Chord) => {
     scale: chordConfig.scale,
   });
 
-  (chordConfig.scale === "Minor" ? minorFamily : majorFamily).map((count) => {
+  (chordConfig.scale === "Minor"
+    ? minorFamily
+    : chordConfig.scale === "Major"
+    ? majorFamily
+    : powerChordFamily
+  ).map((count) => {
     index = (index + count.count) % rootNotes.length;
     potentialChords.push({
       id: `${rootNotes[index].name}${count.scale}`,

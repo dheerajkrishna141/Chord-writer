@@ -1,5 +1,5 @@
 import { useDraggable } from "@dnd-kit/core";
-import { scales } from "../data/ChordConfigData";
+import { types } from "../data/ChordConfigData";
 import { Chord } from "./ChordConfigBar";
 
 interface props {
@@ -24,9 +24,7 @@ const ChordBox = ({ chord, isPlaced, className }: props) => {
       : {}),
   };
 
-  const renderSuffix = scales.find(
-    (scale) => scale.name === chord.scale
-  )?.suffix;
+  const renderSuffix = types.find((type) => type.name === chord.scale)?.suffix;
   return (
     <div
       ref={setNodeRef}
