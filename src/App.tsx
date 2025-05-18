@@ -9,14 +9,13 @@ import {
 } from "@dnd-kit/core";
 import { useState } from "react";
 import "./App.css";
+import Aside from "./components/Aside";
 import Canvas, { CanvasType } from "./components/Canvas";
 import ChordBar from "./components/ChordBar";
 import ChordConfigBar, { Chord } from "./components/ChordConfigBar";
 import { MetaData } from "./components/MetaData";
 import { ChordContext } from "./stateManagement/chordContext";
 import { MetaDataContext } from "./stateManagement/metaDataContext";
-import Aside from "./components/Aside";
-import { BiChevronLeft } from "react-icons/bi";
 
 export interface renderChords extends Chord {
   overid: string;
@@ -146,7 +145,7 @@ function App() {
               }}
             >
               <button
-                className="md:hidden btn btn-secondary mb-4"
+                className="print-hide md:hidden btn btn-secondary mb-4"
                 onClick={() => setNavActive(!navActive)}
               >
                 <i className="fas fa-music"></i>

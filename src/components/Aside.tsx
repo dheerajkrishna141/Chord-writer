@@ -1,9 +1,8 @@
 import React from "react";
-import { LuChevronFirst } from "react-icons/lu";
-import CustomChord from "./CustomChord";
-import DeleteBox from "./DeleteBox";
 import { ChordContext } from "../stateManagement/chordContext";
 import ChordBox from "./ChordBox";
+import CustomChord from "./CustomChord";
+import DeleteBox from "./DeleteBox";
 
 interface props {
   NavActive: boolean;
@@ -14,11 +13,7 @@ const Aside = ({ NavActive, setNavActive }: props) => {
   const context = React.useContext(ChordContext);
   return (
     <div>
-      <aside
-        className={`aside ${
-          NavActive && `active`
-        } absolute top-0 z-100 h-screen`}
-      >
+      <aside className={`aside ${NavActive && `active`} fixed top-0 z-100`}>
         <div className="flex justify-end mb-4">
           <button
             onClick={() => setNavActive(!NavActive)}

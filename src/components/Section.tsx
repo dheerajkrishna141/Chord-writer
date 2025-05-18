@@ -1,12 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { renderChords } from "../App";
 import { ChordContext } from "../stateManagement/chordContext";
+import { MetaDataContext } from "../stateManagement/metaDataContext";
 import { SectionState } from "./Canvas";
 import ChordBox from "./ChordBox";
 import DropBox from "./DropBox";
 import DynamicDropBox from "./DynamicDropBox";
-import { MetaDataContext } from "../stateManagement/metaDataContext";
-import { text } from "framer-motion/client";
 
 interface props {
   sectionItem: SectionState;

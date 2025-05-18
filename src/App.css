@@ -44,6 +44,7 @@
 
 .draggable-placed {
   cursor: grab;
+  touch-action: none;
 }
 .draggable-placed:hover {
   box-shadow: 4px 4px 0px #cbd5e0; /* Shadow on hover */
@@ -76,6 +77,7 @@
   color: #1a202c;
   padding: 1.5rem;
   padding-top: 5rem;
+  height: 100vh;
   left: -100%;
   width: 70%;
   transition: all 0.3s ease-in-out;
