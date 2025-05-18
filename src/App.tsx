@@ -116,7 +116,7 @@ function App() {
   const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor));
   return (
     <>
-      <div className="m-10 ">
+      <div className="mx-10 mt-10 mb-5">
         <DndContext
           sensors={sensors}
           onDragStart={handleDragStart}
@@ -171,6 +171,9 @@ function App() {
                       </button>
                     </div>
                   </div>
+                </div>
+                <div className="print-hide text-center text-neutral-300 font-extralight mt-10">
+                  © 2025 Dheeraj Krishna Nagula. All rights reserved.
                 </div>
               </div>
             </MetaDataContext.Provider>
