@@ -43,6 +43,9 @@ const CustomChord = ({ className }: props) => {
                 Root: {note.name}
               </option>
             ))}
+            <option key={"."} value={"."}>
+              .
+            </option>
           </select>
         </div>
         <div className="flex flex-col gap-2">

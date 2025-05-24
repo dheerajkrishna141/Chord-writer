@@ -45,7 +45,7 @@ const Aside = ({ NavActive, setNavActive }: props) => {
         </div>
 
         <CustomChord />
-        <div className="mt-2 pt-4 border-t-2 border-dashed rgba(226, 232, 240, 0.6)">
+        <div className="mt-2 pt-4">
           <DeleteBox id="deleteBox"></DeleteBox>
         </div>
       </aside>

@@ -163,7 +163,7 @@ const Section = ({
             <input
               value={sectionItem.Multiplier}
               placeholder="Enter Multiplier"
-              className="print-hide"
+              className="print-hide text-sm pl-2"
               onChange={(e) => setMultiplier(e.target.value, lyricIndex)}
               type="number"
             ></input>
